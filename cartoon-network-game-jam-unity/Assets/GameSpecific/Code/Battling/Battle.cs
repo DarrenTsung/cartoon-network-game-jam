@@ -10,10 +10,12 @@ namespace DT.Game {
     BAD
   }
 
+  [CustomExtensionInspector]
   public class Battle : MonoBehaviour {
     public List<Actor> _goodGuys;
     public List<Actor> _badGuys;
 
+    [MakeButton]
     public void StartBattle() {
       this.DoActionOnAllActors((Actor currentActor) => {
         currentActor.SetupWithBattleContext(this);
@@ -48,6 +50,7 @@ namespace DT.Game {
       BattleSideState side = this.GetSideForActor(actor);
       switch (side) {
         case BattleSideState.GOOD:
+          return this._badGuys[UnityEngine.Random.Range(0, this._badGuys.Count)];
           return null; // TODO (darren): return player's currently selected enemy
         case BattleSideState.BAD:
         default:

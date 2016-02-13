@@ -10,7 +10,7 @@ namespace DT.Game {
     public void SetText(string text) {
       this._text.text = text;
 
-      this.DoEveryFrameForDuration(0.7f, (float time, float duration) => {
+      this.DoEveryFrameForDuration(this._duration, (float time, float duration) => {
         float percentagePassed = time / duration;
         this._text.transform.localPosition = new Vector3(0.0f, percentagePassed, 0.0f);
         this._text.color = new Color(this._text.color.r,
@@ -25,5 +25,7 @@ namespace DT.Game {
     // PRAGMA MARK - Internal
     [SerializeField]
     private Text _text;
+    [SerializeField]
+    private float _duration = 0.7f;
   }
 }

@@ -7,6 +7,10 @@ namespace DT.Game {
   [CustomExtensionInspector]
   public class RhythmSequenceManager : Singleton<RhythmSequenceManager> {
     // PRAGMA MARK - Public Interface
+    public RhythmSequence StartSequence(RhythmSequenceKeyframe[] keyframes) {
+      this._rhythmSequence.StartSequence(keyframes);
+      return this._rhythmSequence;
+    }
 
     // PRAGMA MARK - Internal
     [SerializeField]

@@ -31,13 +31,20 @@ namespace DT.Game {
     public float timePassed;
   }
 
-  public class RhythmSequenceEvent : UnityEvent<RhythmSequence> {}
+  public class RhythmSequenceResult {
+    public int keyframeCount;
+    public int perfectHitCount;
+    public int goodHitCount;
+    public int missCount;
+  }
+
+  public class RhythmSequenceFinishEvent : UnityEvent<RhythmSequence, RhythmSequenceResult> {}
   public class RhythmSequenceKeyframeHitEvent : UnityEvent<RhythmSequenceKeyframe, RhythmSequenceKeyframeRating> {}
 
   public class RhythmSequence : MonoBehaviour {
     // PRAGMA MARK - Public Interface
     [HideInInspector]
-    public RhythmSequenceEvent OnSequenceFinish = new RhythmSequenceEvent();
+    public RhythmSequenceFinishEvent OnSequenceFinished = new RhythmSequenceFinishEvent();
     [HideInInspector]
     public RhythmSequenceKeyframeHitEvent OnKeyframeHit = new RhythmSequenceKeyframeHitEvent();
     [HideInInspector]
@@ -51,6 +58,9 @@ namespace DT.Game {
       this._startTime = Time.time;
 
       this.OnKeyframesChanged.Invoke();
+
+      this._result = new RhythmSequenceResult();
+      this._result.keyframeCount = this._keyframes.Length;
 
       this._sequencePlaying = true;
     }
@@ -74,8 +84,14 @@ namespace DT.Game {
     [SerializeField, ReadOnly]
     private bool _sequencePlaying = false;
 
+    private RhythmSequenceResult _result;
+
     private RhythmSequenceKeyframe[] _keyframes;
     private Dictionary<RhythmSequenceKeyframe, bool> _completedKeyframes = new Dictionary<RhythmSequenceKeyframe, bool>();
+
+    private void Awake() {
+      this.OnKeyframeHit.AddListener(this.HandleKeyframeHit);
+    }
 
     private void HandleTap() {
       if (!this._sequencePlaying) {
@@ -133,8 +149,24 @@ namespace DT.Game {
       }
     }
 
-    private void OnSequenceFinished() {
+    private void HandleKeyframeHit(RhythmSequenceKeyframe keyframe, RhythmSequenceKeyframeRating rating) {
+      switch (rating) {
+        case RhythmSequenceKeyframeRating.PERFECT:
+          this._result.perfectHitCount++;
+          break;
+        case RhythmSequenceKeyframeRating.GOOD:
+          this._result.goodHitCount++;
+          break;
+        case RhythmSequenceKeyframeRating.MISS:
+          this._result.missCount++;
+          break;
+      }
+    }
+
+    private void FinishSequence() {
       AppTouchManager.Instance.OnTap.RemoveListener(this.HandleTap);
+      this.OnSequenceFinished.Invoke(this, this._result);
+      this._result = null;
     }
 
     private void CompleteKeyframe(RhythmSequenceKeyframe keyframe) {
@@ -148,7 +180,7 @@ namespace DT.Game {
       }
 
       if (allCompleted) {
-        this.OnSequenceFinished();
+        this.FinishSequence();
       }
     }
   }

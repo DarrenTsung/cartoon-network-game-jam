@@ -36,6 +36,7 @@ namespace DT.Game {
       FloatingTextSFX floatingTextSFX = floatingTextSFXObject.GetComponent<FloatingTextSFX>();
       floatingTextSFX.SetText(rating.ToString());
 
+      GameObject.Destroy(this._visualizerMap[keyframe].gameObject);
       this._visualizerMap.Remove(keyframe);
     }
 

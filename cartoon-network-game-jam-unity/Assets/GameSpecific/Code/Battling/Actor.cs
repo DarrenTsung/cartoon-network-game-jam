@@ -4,11 +4,11 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace DT.Game {
+  [CustomExtensionInspector]
   public class Actor : MonoBehaviour {
     // PRAGMA MARK - Public Interface
     public int health;
     public int attackPower;
-    public int speed;
 
     public List<Move> moveset;
 
@@ -18,6 +18,11 @@ namespace DT.Game {
 
     public void DisplayMoveset() {
 
+    }
+
+    [MakeButton]
+    public void DebugApplyFirstMove() {
+      this.ApplyMove(this.moveset[0]);
     }
 
     public void ApplyMove(Move move) {
