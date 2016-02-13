@@ -1,10 +1,11 @@
 using DT;
 using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace DT.Game {
-  public class BasicAttackMove : Move {
+  public class BasicBlockableAttackMove : Move {
     // PRAGMA MARK - Public Interface
     public override void Apply(Battle battle, List<Actor> teammates, List<Actor> enemies, Actor actor, Actor target) {
       RhythmSequence sequence = RhythmSequenceManager.Instance.StartSequence(this.moveKeyframes);
@@ -25,9 +26,9 @@ namespace DT.Game {
     private void HandleSequenceFinished(RhythmSequence sequence, RhythmSequenceResult result) {
       sequence.OnSequenceFinished.RemoveListener(this.HandleSequenceFinished);
 
-      float computedAttackMultiplier = this._attackMultiplier + (0.3f * result.perfectHitCount) + (0.1f * result.goodHitCount) + (-0.1f * result.missCount);
+      float computedAttackMultiplier = this._attackMultiplier - (0.3f * result.perfectHitCount) - (0.1f * result.goodHitCount) - (-0.1f * result.missCount);
 
-      int damage = (int)(this._actor.attackPower * computedAttackMultiplier);
+      int damage = Math.Max((int)(this._actor.attackPower * computedAttackMultiplier), 0);
       this._target.health -= damage;
 
       GameObject floatingTextSFXObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate("DamageFloatingTextSFX");

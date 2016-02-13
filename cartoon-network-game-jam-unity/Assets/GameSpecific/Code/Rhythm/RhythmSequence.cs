@@ -165,7 +165,10 @@ namespace DT.Game {
 
     private void FinishSequence() {
       AppTouchManager.Instance.OnTap.RemoveListener(this.HandleTap);
-      this.OnSequenceFinished.Invoke(this, this._result);
+      RhythmSequenceResult result = this._result;
+      this.DoAfterDelay(0.1f, () => {
+        this.OnSequenceFinished.Invoke(this, result);
+      });
       this._result = null;
     }
 

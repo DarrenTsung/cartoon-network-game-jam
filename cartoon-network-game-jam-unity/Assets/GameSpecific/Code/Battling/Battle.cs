@@ -20,6 +20,10 @@ namespace DT.Game {
       this.DoActionOnAllActors((Actor currentActor) => {
         currentActor.SetupWithBattleContext(this);
       });
+
+      this._actedActors.Clear();
+
+      this.StartNextActor();
     }
 
     public BattleSideState GetSideForActor(Actor actor) {
@@ -51,7 +55,7 @@ namespace DT.Game {
       switch (side) {
         case BattleSideState.GOOD:
           return this._badGuys[UnityEngine.Random.Range(0, this._badGuys.Count)];
-          return null; // TODO (darren): return player's currently selected enemy
+          // return null; // TODO (darren): return player's currently selected enemy
         case BattleSideState.BAD:
         default:
           // if the person attacking is bad, return random good guy
@@ -61,14 +65,85 @@ namespace DT.Game {
 
     public void HandleActorStartActing(Actor actor) {
       this._currentlyActingActor = actor;
+      switch (this.GetSideForActor(this._currentlyActingActor)) {
+        case BattleSideState.GOOD:
+          this._currentlyActingActor.DisplayMoveset();
+          break;
+        case BattleSideState.BAD:
+        default:
+          this._currentlyActingActor.DoRandomMove();
+          break;
+      }
+      this._currentlyActingActor.OnFinishedActing.AddListener(this.HandleCurrentActorFinishActing);
     }
 
-    public void HandleActorFinishActing(Actor actor) {
+    public void HandleCurrentActorFinishActing() {
+      this._currentlyActingActor.OnFinishedActing.RemoveListener(this.HandleCurrentActorFinishActing);
+      this._actedActors.Add(this._currentlyActingActor);
       this._currentlyActingActor = null;
+
+      this.StartNextActor();
     }
 
     // PRAGMA MARK - Internal
     private Actor _currentlyActingActor;
+
+    private BattleSideState _currentlyActingSide = BattleSideState.GOOD;
+    private HashSet<Actor> _actedActors = new HashSet<Actor>();
+
+    private void Awake() {
+      this.StartBattle();
+    }
+
+    private List<Actor> GetActorsForCurrentSide() {
+      switch (this._currentlyActingSide) {
+        case BattleSideState.GOOD:
+          return this._goodGuys;
+        case BattleSideState.BAD:
+        default:
+          return this._badGuys;
+      }
+    }
+
+    private void SwitchCurrentSide() {
+      switch (this._currentlyActingSide) {
+        case BattleSideState.GOOD:
+          this._currentlyActingSide = BattleSideState.BAD;
+          break;
+        case BattleSideState.BAD:
+        default:
+          this._currentlyActingSide = BattleSideState.GOOD;
+          break;
+      }
+
+      this._actedActors.Clear();
+    }
+
+    private bool AreAllActorsForCurrentSideFinishedActing() {
+      foreach (Actor actor in this.GetActorsForCurrentSide()) {
+        if (!this._actedActors.Contains(actor)) {
+          return false;
+        }
+      }
+
+      return true;
+    }
+
+    private void StartNextActor() {
+      if (this.AreAllActorsForCurrentSideFinishedActing()) {
+        this.SwitchCurrentSide();
+        this.StartNextActor();
+      } else {
+        foreach (Actor actor in this.GetActorsForCurrentSide()) {
+          if (this._actedActors.Contains(actor)) {
+            // if this actor has acted, continue
+            continue;
+          }
+
+          this.HandleActorStartActing(actor);
+        }
+      }
+    }
 
     private void DoActionOnAllActors(Action<Actor> action) {
       foreach (Actor actor in this._goodGuys) {
