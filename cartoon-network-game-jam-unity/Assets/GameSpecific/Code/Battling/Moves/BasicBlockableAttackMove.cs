@@ -5,30 +5,12 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace DT.Game {
-  public class BasicBlockableAttackMove : Move {
+  public class BasicBlockableAttackMove : BasicAttackMove {
     // PRAGMA MARK - Public Interface
-    public override void Apply(Battle battle, List<Actor> teammates, List<Actor> enemies, Actor actor, Actor target) {
-      RhythmSequence sequence = RhythmSequenceManager.Instance.StartSequence(this.moveKeyframes);
-      sequence.OnSequenceFinished.AddListener(this.HandleSequenceFinished);
-      this._actor = actor;
-      this._target = target;
-    }
+    protected override void DoDamage() {
+      float computedAttackMultiplier = this._attackMultiplier - (0.3f * this._result.perfectHitCount) - (0.1f * this._result.goodHitCount) - (-0.1f * this._result.missCount);
 
-    public RhythmSequenceKeyframe[] moveKeyframes;
-
-    // PRAGMA MARK - Internal
-    [SerializeField]
-    private float _attackMultiplier = 1.0f;
-
-    private Actor _actor;
-    private Actor _target;
-
-    private void HandleSequenceFinished(RhythmSequence sequence, RhythmSequenceResult result) {
-      sequence.OnSequenceFinished.RemoveListener(this.HandleSequenceFinished);
-
-      float computedAttackMultiplier = this._attackMultiplier - (0.3f * result.perfectHitCount) - (0.1f * result.goodHitCount) - (-0.1f * result.missCount);
-
-      int damage = Math.Max((int)(this._actor.attackPower * computedAttackMultiplier), 0);
+      int damage = (int)(this._actor.attackPower * computedAttackMultiplier);
       this._target.health -= damage;
 
       GameObject floatingTextSFXObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate("DamageFloatingTextSFX");
@@ -37,10 +19,6 @@ namespace DT.Game {
 
       FloatingTextSFX floatingTextSFX = floatingTextSFXObject.GetComponent<FloatingTextSFX>();
       floatingTextSFX.SetText(string.Format("-{0}", damage));
-
-      this.DoAfterDelay(1.0f, () => {
-        this.OnMoveFinished.Invoke(this);
-      });
     }
   }
 }

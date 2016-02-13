@@ -9,6 +9,7 @@ namespace DT.Game {
   public class Actor : MonoBehaviour, IMoveViewContext {
     // PRAGMA MARK - Public Interface
     public UnityEvent OnFinishedActing = new UnityEvent();
+    public UnityEvent OnFinishedFlashyAnimating = new UnityEvent();
 
     public int health;
     public int attackPower;
@@ -38,6 +39,32 @@ namespace DT.Game {
       move.OnMoveFinished.AddListener(this.HandleMoveFinished);
     }
 
+    public Vector3 AttackedPosition {
+      get { return this._attackedPositionTransform.position; }
+    }
+
+    public Vector3 BasePosition {
+      get { return this._basePositionTransform.position; }
+    }
+
+    public void FlashyAnimateTo(Vector3 endPosition) {
+      Vector3 startPosition = this.transform.position;
+
+      int duplicateSpriteCount = 0;
+      this.DoEveryFrameForDuration(GameConstants.Instance.kFlashyAttackTransitionDuration, (float time, float duration) => {
+        float percentageComplete = Easers.Ease(EaseType.QuadOut, 0.0f, 1.0f, time, duration);
+        this.transform.position = Vector3.Lerp(startPosition, endPosition, percentageComplete);
+        if ((int)(time / GameConstants.Instance.kDuplicateSpriteDelay) > duplicateSpriteCount) {
+          this.SpawnDuplicateSprite();
+          duplicateSpriteCount++;
+        }
+      }, () => {
+        this.transform.position = endPosition;
+        this.OnFinishedFlashyAnimating.Invoke();
+      });
+    }
+
+
     // PRAGMA MARK - IMoveViewContext Implementation
     public void HandleMoveTapped(Move move) {
       this.ApplyMove(move);
@@ -46,11 +73,27 @@ namespace DT.Game {
 
 
     // PRAGMA MARK - Internal
+    [Header("Outlets - FILL THIS OUT")]
+    [SerializeField]
+    private Transform _attackedPositionTransform;
+    [SerializeField]
+    private Transform _basePositionTransform;
+    [SerializeField]
+    private SpriteRenderer _renderer;
+
     private Battle _battle;
 
     private void HandleMoveFinished(Move move) {
       move.OnMoveFinished.RemoveListener(this.HandleMoveFinished);
       this.OnFinishedActing.Invoke();
+    }
+
+    private void SpawnDuplicateSprite() {
+      GameObject duplicateSpriteFaderObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate("DuplicateSpriteFader");
+      duplicateSpriteFaderObject.transform.position = this.transform.position;
+
+      DuplicateSpriteFader fader = duplicateSpriteFaderObject.GetComponent<DuplicateSpriteFader>();
+      fader.SetSprite(this._renderer.sprite);
     }
   }
 }

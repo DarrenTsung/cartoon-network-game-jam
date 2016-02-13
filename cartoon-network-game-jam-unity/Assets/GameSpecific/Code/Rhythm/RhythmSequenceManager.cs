@@ -7,8 +7,9 @@ namespace DT.Game {
   [CustomExtensionInspector]
   public class RhythmSequenceManager : Singleton<RhythmSequenceManager> {
     // PRAGMA MARK - Public Interface
-    public RhythmSequence StartSequence(RhythmSequenceKeyframe[] keyframes) {
+    public RhythmSequence StartSequence(RhythmSequenceKeyframe[] keyframes, Vector3 worldPosition) {
       this._rhythmSequence.StartSequence(keyframes);
+      ((RectTransform)this._rhythmSequenceVisualizer.transform).anchoredPosition = Camera.main.WorldToScreenPoint(worldPosition);
       return this._rhythmSequence;
     }
 

@@ -10,5 +10,9 @@ namespace DT.Game {
 
     public float kGoodTimingThreshold = 0.18f;
     public float kPerfectTimingThreshold = 0.07f;
+
+    public float kFlashyAttackTransitionDuration = 0.6f;
+    public float kAttackDuration = 1.0f;
+    public float kDuplicateSpriteDelay = 0.1f;
   }
 }

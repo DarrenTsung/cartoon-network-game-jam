@@ -7,7 +7,7 @@ namespace DT.Game {
   public class BasicAttackMove : Move {
     // PRAGMA MARK - Public Interface
     public override void Apply(Battle battle, List<Actor> teammates, List<Actor> enemies, Actor actor, Actor target) {
-      RhythmSequence sequence = RhythmSequenceManager.Instance.StartSequence(this.moveKeyframes);
+      RhythmSequence sequence = RhythmSequenceManager.Instance.StartSequence(this.moveKeyframes, actor.transform.position);
       sequence.OnSequenceFinished.AddListener(this.HandleSequenceFinished);
       this._actor = actor;
       this._target = target;
@@ -17,15 +17,15 @@ namespace DT.Game {
 
     // PRAGMA MARK - Internal
     [SerializeField]
-    private float _attackMultiplier = 1.0f;
+    protected float _attackMultiplier = 1.0f;
 
-    private Actor _actor;
-    private Actor _target;
+    protected Actor _actor;
+    protected Actor _target;
 
-    private void HandleSequenceFinished(RhythmSequence sequence, RhythmSequenceResult result) {
-      sequence.OnSequenceFinished.RemoveListener(this.HandleSequenceFinished);
+    protected RhythmSequenceResult _result;
 
-      float computedAttackMultiplier = this._attackMultiplier + (0.3f * result.perfectHitCount) + (0.1f * result.goodHitCount) + (-0.1f * result.missCount);
+    protected virtual void DoDamage() {
+      float computedAttackMultiplier = this._attackMultiplier + (0.3f * this._result.perfectHitCount) + (0.1f * this._result.goodHitCount) + (-0.1f * this._result.missCount);
 
       int damage = (int)(this._actor.attackPower * computedAttackMultiplier);
       this._target.health -= damage;
@@ -36,6 +36,29 @@ namespace DT.Game {
 
       FloatingTextSFX floatingTextSFX = floatingTextSFXObject.GetComponent<FloatingTextSFX>();
       floatingTextSFX.SetText(string.Format("-{0}", damage));
+    }
+
+    private void HandleSequenceFinished(RhythmSequence sequence, RhythmSequenceResult result) {
+      this._result = result;
+
+      sequence.OnSequenceFinished.RemoveListener(this.HandleSequenceFinished);
+      this._actor.FlashyAnimateTo(this._target.AttackedPosition);
+      this._actor.OnFinishedFlashyAnimating.AddListener(this.Attack);
+    }
+
+    private void Attack() {
+      this._actor.OnFinishedFlashyAnimating.RemoveListener(this.Attack);
+
+      this.DoDamage();
+
+      this.DoAfterDelay(GameConstants.Instance.kAttackDuration, () => {
+        this._actor.FlashyAnimateTo(this._actor.BasePosition);
+        this._actor.OnFinishedFlashyAnimating.AddListener(this.BackToIdle);
+      });
+    }
+
+    private void BackToIdle() {
+      this._actor.OnFinishedFlashyAnimating.RemoveListener(this.BackToIdle);
 
       this.DoAfterDelay(1.0f, () => {
         this.OnMoveFinished.Invoke(this);
