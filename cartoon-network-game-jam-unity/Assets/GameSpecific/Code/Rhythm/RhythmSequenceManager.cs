@@ -9,7 +9,7 @@ namespace DT.Game {
     // PRAGMA MARK - Public Interface
     public RhythmSequence StartSequence(RhythmSequenceKeyframe[] keyframes, Vector3 worldPosition) {
       this._rhythmSequence.StartSequence(keyframes);
-      ((RectTransform)this._rhythmSequenceVisualizer.transform).anchoredPosition = Camera.main.WorldToScreenPoint(worldPosition);
+      this._rhythmSequenceVisualizer.transform.position = worldPosition;
       return this._rhythmSequence;
     }
 

@@ -11,9 +11,13 @@ namespace DT.Game {
   }
 
   [CustomExtensionInspector]
-  public class Battle : MonoBehaviour {
+  public class Battle : Singleton<Battle> {
     public List<Actor> _goodGuys;
     public List<Actor> _badGuys;
+
+    public Actor CurrentlyActingActor {
+      get { return this._currentlyActingActor; }
+    }
 
     [MakeButton]
     public void StartBattle() {

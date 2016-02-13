@@ -8,6 +8,7 @@ namespace DT.Game {
     // PRAGMA MARK - Public Interface
     public void SetupWithContext(RhythmSequence sequence) {
       this._sequence = sequence;
+      this._sequence.OnSequenceFinished.AddListener(this.HandleSequenceFinished);
       this._sequence.OnKeyframeHit.AddListener(this.HandleKeyframeHit);
       this._sequence.OnKeyframesChanged.AddListener(this.HandleSequenceKeyframesChanged);
     }
@@ -15,6 +16,10 @@ namespace DT.Game {
     // PRAGMA MARK - Internal
     [SerializeField]
     private RhythmSequence _sequence;
+    [SerializeField]
+    private float _radius = 2.0f;
+    [SerializeField]
+    private GameObject _container;
 
     private Dictionary<RhythmSequenceKeyframe, RhythmSequenceKeyframeVisualizer> _visualizerMap = new Dictionary<RhythmSequenceKeyframe, RhythmSequenceKeyframeVisualizer>();
 
@@ -25,13 +30,24 @@ namespace DT.Game {
 
         float timePassed = this._sequence.GetTimePassed();
         float timeRemaining = keyframe.timePassed - timePassed;
-        keyframeVisualizer.UpdateWithTimeRemaining(timeRemaining);
+
+        float angle = 180.0f * Mathf.Clamp(1.0f - timeRemaining, 0.0f, 1.2f);
+        Vector3 computedPosition = this._radius * (Quaternion.AngleAxis(angle, -Vector3.forward) * new Vector3(-1.0f, 0.0f, 0.0f));
+        keyframeVisualizer.transform.localPosition = computedPosition;
+        // keyframeVisualizer.UpdateWithTimeRemaining(timeRemaining);
       }
+    }
+
+    private void HandleSequenceFinished(RhythmSequence sequence, RhythmSequenceResult result) {
+      this._container.SetActive(false);
     }
 
     private void HandleKeyframeHit(RhythmSequenceKeyframe keyframe, RhythmSequenceKeyframeRating rating) {
       GameObject floatingTextSFXObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate("FloatingTextSFX");
-      floatingTextSFXObject.transform.SetParent(this.transform, worldPositionStays : false);
+      floatingTextSFXObject.transform.SetParent(CanvasUtil.MainCanvas.transform, worldPositionStays : false);
+
+      RectTransform rectTransform = (RectTransform)floatingTextSFXObject.transform;
+      rectTransform.anchoredPosition = rectTransform.anchoredPosition + (Vector2)Camera.main.WorldToScreenPoint(this.transform.position);
 
       FloatingTextSFX floatingTextSFX = floatingTextSFXObject.GetComponent<FloatingTextSFX>();
       floatingTextSFX.SetText(rating.ToString());
@@ -41,12 +57,12 @@ namespace DT.Game {
     }
 
     private void HandleSequenceKeyframesChanged() {
-      this.transform.DestroyAllChildren();
       this._visualizerMap.Clear();
+      this._container.SetActive(true);
 
       foreach (RhythmSequenceKeyframe keyframe in this._sequence.Keyframes) {
         GameObject keyframeVisualizerObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate("RhythmSequenceKeyframeVisualizer");
-        keyframeVisualizerObject.transform.SetParent(this.transform, worldPositionStays : false);
+        keyframeVisualizerObject.transform.SetParent(this._container.transform, worldPositionStays : false);
 
         RhythmSequenceKeyframeVisualizer keyframeVisualizer = keyframeVisualizerObject.GetComponent<RhythmSequenceKeyframeVisualizer>();
         this._visualizerMap[keyframe] = keyframeVisualizer;

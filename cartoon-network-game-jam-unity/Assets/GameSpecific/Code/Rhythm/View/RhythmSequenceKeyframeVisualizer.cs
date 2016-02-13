@@ -1,6 +1,5 @@
 using DT;
 using UnityEngine;
-using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,15 +11,17 @@ namespace DT.Game {
         timeRemaining = 0.0f;
       }
 
-      this.transform.localScale = new Vector3(timeRemaining, timeRemaining, 1.0f);
-      this._image.color = new Color(this._image.color.r,
-                                    this._image.color.g,
-                                    this._image.color.b,
-                                    Mathf.Max(1.0f - timeRemaining, 0.1f));
+      float computedScale = Mathf.Min(timeRemaining, 1.4f);
+
+      this.transform.localScale = new Vector3(computedScale, computedScale, 1.0f);
+      this._renderer.color = new Color(this._renderer.color.r,
+                                       this._renderer.color.g,
+                                       this._renderer.color.b,
+                                       Mathf.Max(1.0f - timeRemaining, 0.1f));
     }
 
     // PRAGMA MARK - Internal
     [SerializeField]
-    private Image _image;
+    private SpriteRenderer _renderer;
   }
 }
