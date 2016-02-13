@@ -1,0 +1,12 @@
+[submodule "cartoon-network-game-jam-unity/Assets/DTCoreModule"]
+	path = cartoon-network-game-jam-unity/Assets/DTCoreModule
+	url = https://github.com/DarrenTsung/DTCoreModule.git
+[submodule "cartoon-network-game-jam-unity/Assets/DTGameEngineModule"]
+	path = cartoon-network-game-jam-unity/Assets/DTGameEngineModule
+	url = https://github.com/DarrenTsung/DTGameEngineModule.git
+[submodule "cartoon-network-game-jam-unity/Assets/DTExtrasModule"]
+	path = cartoon-network-game-jam-unity/Assets/DTExtrasModule
+	url = https://github.com/DarrenTsung/DTExtrasModule.git
+[submodule "cartoon-network-game-jam-unity/Assets/DTTweenModule"]
+	path = cartoon-network-game-jam-unity/Assets/DTTweenModule
+	url = https://github.com/DarrenTsung/DTTweenModule.git
