@@ -68,6 +68,10 @@ namespace DT.Game {
     }
 
     public void HandleActorStartActing(Actor actor) {
+      if (this._currentlyActingActor != null) {
+        Debug.LogError("Replacing currently acting actor! " + this._currentlyActingActor.gameObject.FullName());
+      }
+
       this._currentlyActingActor = actor;
       switch (this.GetSideForActor(this._currentlyActingActor)) {
         case BattleSideState.GOOD:
@@ -80,10 +84,15 @@ namespace DT.Game {
           this._currentlyActingActor.DoRandomMove();
           break;
       }
+
       this._currentlyActingActor.OnFinishedActing.AddListener(this.HandleCurrentActorFinishActing);
     }
 
     public void HandleCurrentActorFinishActing() {
+      if (this._currentlyActingActor == null) {
+        return;
+      }
+
       this._currentlyActingActor.OnFinishedActing.RemoveListener(this.HandleCurrentActorFinishActing);
       this._actedActors.Add(this._currentlyActingActor);
       this._currentlyActingActor = null;
@@ -92,7 +101,7 @@ namespace DT.Game {
     }
 
     // PRAGMA MARK - Internal
-    private Actor _currentlyActingActor;
+    private Actor _currentlyActingActor = null;
 
     private BattleSideState _currentlyActingSide = BattleSideState.GOOD;
     private HashSet<Actor> _actedActors = new HashSet<Actor>();
@@ -147,6 +156,7 @@ namespace DT.Game {
           }
 
           this.HandleActorStartActing(actor);
+          break;
         }
       }
     }

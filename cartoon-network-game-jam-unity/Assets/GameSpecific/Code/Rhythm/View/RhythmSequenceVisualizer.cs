@@ -44,6 +44,9 @@ namespace DT.Game {
     }
 
     private void HandleSequenceFinished(RhythmSequence sequence, RhythmSequenceResult result) {
+      foreach (KeyValuePair<RhythmSequenceKeyframe, RhythmSequenceKeyframeVisualizer> pair in this._visualizerMap) {
+        GameObject.Destroy(pair.Value.gameObject);
+      }
       this._container.SetActive(false);
     }
 
