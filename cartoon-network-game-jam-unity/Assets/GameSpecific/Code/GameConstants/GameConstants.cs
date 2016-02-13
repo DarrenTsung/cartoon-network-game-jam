@@ -7,5 +7,8 @@ namespace DT.Game {
     // PRAGMA MARK - Public Interface
     // this is multiplied by each actors speed to get how long realtime they need to wait before doing some action
     public float ActorSpeedMultiplier = 0.01f;
+
+    public float kGoodTimingThreshold = 0.18f;
+    public float kPerfectTimingThreshold = 0.07f;
   }
 }
