@@ -71,10 +71,12 @@ namespace DT.Game {
       this._currentlyActingActor = actor;
       switch (this.GetSideForActor(this._currentlyActingActor)) {
         case BattleSideState.GOOD:
+          RhythmSequenceManager.Instance.SetVisualizationRotationDirection(RotationDirection.CLOCKWISE);
           this._currentlyActingActor.DisplayMoveset();
           break;
         case BattleSideState.BAD:
         default:
+          RhythmSequenceManager.Instance.SetVisualizationRotationDirection(RotationDirection.COUNTER_CLOCKWISE);
           this._currentlyActingActor.DoRandomMove();
           break;
       }

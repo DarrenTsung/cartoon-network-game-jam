@@ -13,6 +13,8 @@ namespace DT.Game {
       this._sequence.OnKeyframesChanged.AddListener(this.HandleSequenceKeyframesChanged);
     }
 
+    public RotationDirection rotationDirection;
+
     // PRAGMA MARK - Internal
     [SerializeField]
     private RhythmSequence _sequence;
@@ -24,6 +26,8 @@ namespace DT.Game {
     private Dictionary<RhythmSequenceKeyframe, RhythmSequenceKeyframeVisualizer> _visualizerMap = new Dictionary<RhythmSequenceKeyframe, RhythmSequenceKeyframeVisualizer>();
 
     private void Update() {
+      this._container.transform.localScale = (this.rotationDirection == RotationDirection.CLOCKWISE) ? new Vector3(1.0f, 1.0f, 1.0f) : new Vector3(-1.0f, 1.0f, 1.0f);
+
       foreach (KeyValuePair<RhythmSequenceKeyframe, RhythmSequenceKeyframeVisualizer> pair in this._visualizerMap) {
         RhythmSequenceKeyframe keyframe = pair.Key;
         RhythmSequenceKeyframeVisualizer keyframeVisualizer = pair.Value;
@@ -32,6 +36,7 @@ namespace DT.Game {
         float timeRemaining = keyframe.timePassed - timePassed;
 
         float angle = 180.0f * Mathf.Clamp(1.0f - timeRemaining, 0.0f, 1.2f);
+
         Vector3 computedPosition = this._radius * (Quaternion.AngleAxis(angle, -Vector3.forward) * new Vector3(-1.0f, 0.0f, 0.0f));
         keyframeVisualizer.transform.localPosition = computedPosition;
         // keyframeVisualizer.UpdateWithTimeRemaining(timeRemaining);

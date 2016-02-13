@@ -13,6 +13,10 @@ namespace DT.Game {
       return this._rhythmSequence;
     }
 
+    public void SetVisualizationRotationDirection(RotationDirection newRotationDirection) {
+      this._rhythmSequenceVisualizer.rotationDirection = newRotationDirection;
+    }
+
     // PRAGMA MARK - Internal
     [SerializeField]
     private RhythmSequence _rhythmSequence;
