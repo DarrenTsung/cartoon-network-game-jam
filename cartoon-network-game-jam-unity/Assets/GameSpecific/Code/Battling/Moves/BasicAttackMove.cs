@@ -48,10 +48,13 @@ namespace DT.Game {
 
     private void Attack() {
       this._actor.OnFinishedFlashyAnimating.RemoveListener(this.Attack);
+      this._actor.AnimatorAttack();
+      this._target.AnimatorDamage();
 
       this.DoDamage();
 
       this.DoAfterDelay(GameConstants.Instance.kAttackDuration, () => {
+        this._actor.AnimatorIdle();
         this._actor.FlashyAnimateTo(this._actor.BasePosition);
         this._actor.OnFinishedFlashyAnimating.AddListener(this.BackToIdle);
       });

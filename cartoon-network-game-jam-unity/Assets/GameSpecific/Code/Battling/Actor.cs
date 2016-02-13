@@ -8,7 +8,9 @@ namespace DT.Game {
   [CustomExtensionInspector]
   public class Actor : MonoBehaviour, IMoveViewContext {
     // PRAGMA MARK - Public Interface
+    [HideInInspector]
     public UnityEvent OnFinishedActing = new UnityEvent();
+    [HideInInspector]
     public UnityEvent OnFinishedFlashyAnimating = new UnityEvent();
 
     public int health;
@@ -64,6 +66,30 @@ namespace DT.Game {
       });
     }
 
+    public void AnimatorAttack() {
+      if (this._animator == null) {
+        return;
+      }
+
+      this._animator.SetTrigger("Attack1");
+    }
+
+    public void AnimatorIdle() {
+      if (this._animator == null) {
+        return;
+      }
+
+      this._animator.SetTrigger("Idle");
+    }
+
+    public void AnimatorDamage() {
+      if (this._animator == null) {
+        return;
+      }
+
+      this._animator.SetTrigger("Damage");
+    }
+
 
     // PRAGMA MARK - IMoveViewContext Implementation
     public void HandleMoveTapped(Move move) {
@@ -80,6 +106,8 @@ namespace DT.Game {
     private Transform _basePositionTransform;
     [SerializeField]
     private SpriteRenderer _renderer;
+    [SerializeField]
+    private Animator _animator;
 
     private Battle _battle;
 
