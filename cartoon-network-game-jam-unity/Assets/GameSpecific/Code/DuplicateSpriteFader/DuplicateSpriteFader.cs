@@ -12,7 +12,7 @@ namespace DT.Game {
         this._renderer.color = new Color(1.0f, 1.0f, 1.0f, 1.0f - percentageComplete);
       }, () => {
         this._renderer.color = Color.clear;
-        // possibly recycle here if not lazy
+        Toolbox.GetInstance<ObjectPoolManager>().Recycle(this.gameObject);
       });
     }
 

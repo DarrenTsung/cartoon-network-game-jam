@@ -11,21 +11,30 @@ namespace DT.Game {
       sequence.OnSequenceFinished.AddListener(this.HandleSequenceFinished);
       this._actor = actor;
       this._target = target;
+      this._enemies = enemies;
     }
 
     public RhythmSequenceKeyframe[] moveKeyframes;
 
     // PRAGMA MARK - Internal
     [SerializeField]
+    protected float _perfectMultiplier = 0.3f;
+    [SerializeField]
+    protected float _goodMultiplier = 0.1f;
+    [SerializeField]
+    protected float _missMultiplier = -0.1f;
+
+    [SerializeField]
     protected float _attackMultiplier = 1.0f;
 
     protected Actor _actor;
     protected Actor _target;
+    protected List<Actor> _enemies;
 
     protected RhythmSequenceResult _result;
 
     protected virtual void DoDamage() {
-      float computedAttackMultiplier = this._attackMultiplier + (0.3f * this._result.perfectHitCount) + (0.1f * this._result.goodHitCount) + (-0.1f * this._result.missCount);
+      float computedAttackMultiplier = this._attackMultiplier + (this._perfectMultiplier * this._result.perfectHitCount) + (this._goodMultiplier * this._result.goodHitCount) + (this._missMultiplier * this._result.missCount);
 
       int damage = (int)(this._actor.attackPower * computedAttackMultiplier);
       this._target.health -= damage;

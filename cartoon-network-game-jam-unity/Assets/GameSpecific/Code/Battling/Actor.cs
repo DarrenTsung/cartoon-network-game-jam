@@ -76,7 +76,9 @@ namespace DT.Game {
 
     public void Die() {
       this.AnimatorDeath();
-      Actor.OnActorDied.Invoke(this);
+      this.DoAfterDelay(0.016f, () => {
+        Actor.OnActorDied.Invoke(this);
+      });
     }
 
     public void AnimatorAttack() {

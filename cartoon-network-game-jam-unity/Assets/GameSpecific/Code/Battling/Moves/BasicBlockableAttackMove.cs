@@ -8,10 +8,14 @@ namespace DT.Game {
   public class BasicBlockableAttackMove : BasicAttackMove {
     // PRAGMA MARK - Public Interface
     protected override void DoDamage() {
-      float computedAttackMultiplier = this._attackMultiplier - (0.3f * this._result.perfectHitCount) - (0.1f * this._result.goodHitCount) - (-0.1f * this._result.missCount);
+      float computedAttackMultiplier = this._attackMultiplier - (this._perfectMultiplier * this._result.perfectHitCount) - (this._goodMultiplier * this._result.goodHitCount) - (this._missMultiplier * this._result.missCount);
 
       int damage = (int)(this._actor.attackPower * computedAttackMultiplier);
       this._target.health -= damage;
+
+      if (this._target.health <= 0) {
+        this._target.Die();
+      }
 
       GameObject floatingTextSFXObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate("DamageFloatingTextSFX");
       floatingTextSFXObject.transform.SetParent(CanvasUtil.MainCanvas.transform, worldPositionStays : false);
