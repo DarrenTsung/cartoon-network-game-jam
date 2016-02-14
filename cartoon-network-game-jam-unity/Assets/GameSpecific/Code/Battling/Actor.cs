@@ -55,10 +55,10 @@ namespace DT.Game {
       get { return this._basePositionTransform.position; }
     }
 
-    public void FlashyAnimateTo(Vector3 endPosition) {
+    public void FlashyAnimateTo(Vector3 endPosition, string rushTrigger) {
       Vector3 startPosition = this.transform.position;
 
-      this.AnimatorRush();
+      this.AnimatorTrigger(rushTrigger);
       int duplicateSpriteCount = 0;
       this.DoEveryFrameForDuration(GameConstants.Instance.kFlashyAttackTransitionDuration, (float time, float duration) => {
         float percentageComplete = Easers.Ease(EaseType.QuadOut, 0.0f, 1.0f, time, duration);
@@ -81,14 +81,12 @@ namespace DT.Game {
       });
     }
 
-    public void AnimatorAttack() {
-      CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude, GameConstants.Instance.kAttackShakeDuration);
-
+    public void AnimatorTrigger(string trigger) {
       if (this._animator == null) {
         return;
       }
 
-      this._animator.SetTrigger("Attack1");
+      this._animator.SetTrigger(trigger);
     }
 
     public void AnimatorIdle() {
@@ -105,14 +103,6 @@ namespace DT.Game {
       }
 
       this._animator.SetTrigger("Damage");
-    }
-
-    public void AnimatorRush() {
-      if (this._animator == null) {
-        return;
-      }
-
-      this._animator.SetTrigger("Rush");
     }
 
     public void AnimatorDeath() {

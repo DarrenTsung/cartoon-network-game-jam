@@ -31,6 +31,11 @@ namespace DT.Game {
     protected Actor _target;
     protected List<Actor> _enemies;
 
+    [SerializeField]
+    protected string _attackTrigger = "Attack1";
+    [SerializeField]
+    protected string _rushTrigger = "Rush";
+
     protected RhythmSequenceResult _result;
 
     protected virtual void DoDamage() {
@@ -55,20 +60,21 @@ namespace DT.Game {
       this._result = result;
 
       sequence.OnSequenceFinished.RemoveListener(this.HandleSequenceFinished);
-      this._actor.FlashyAnimateTo(this._target.AttackedPosition);
+      this._actor.FlashyAnimateTo(this._target.AttackedPosition, this._rushTrigger);
       this._actor.OnFinishedFlashyAnimating.AddListener(this.Attack);
     }
 
     private void Attack() {
       this._actor.OnFinishedFlashyAnimating.RemoveListener(this.Attack);
-      this._actor.AnimatorAttack();
+      this._actor.AnimatorTrigger(this._attackTrigger);
+      CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude, GameConstants.Instance.kAttackShakeDuration);
       this._target.AnimatorDamage();
 
       this.DoDamage();
 
       this.DoAfterDelay(GameConstants.Instance.kAttackDuration, () => {
         this._actor.AnimatorIdle();
-        this._actor.FlashyAnimateTo(this._actor.BasePosition);
+        this._actor.FlashyAnimateTo(this._actor.BasePosition, this._rushTrigger);
         this._actor.OnFinishedFlashyAnimating.AddListener(this.BackToIdle);
       });
     }
