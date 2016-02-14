@@ -19,6 +19,8 @@ namespace DT.Game {
     [HideInInspector]
     public UnityEvent OnFinishedFlashyAnimating = new UnityEvent();
 
+    [ReadOnly]
+    public int baseHealth;
     public int health;
     public int attackPower;
 
@@ -53,6 +55,10 @@ namespace DT.Game {
 
     public Vector3 BasePosition {
       get { return this._basePositionTransform.position; }
+    }
+
+    public Vector3 HealthBarPosition {
+      get { return this._healthBarTransform.position; }
     }
 
     public void FlashyAnimateTo(Vector3 endPosition, string rushTrigger) {
@@ -113,6 +119,14 @@ namespace DT.Game {
       this._animator.SetTrigger("Death");
     }
 
+    public void SetHealthBarActive(bool active) {
+      if (this._healthBarObject == null) {
+        this._queuedHealthBarAction = () => { this._healthBarObject.SetActive(active); };
+      } else {
+        this._healthBarObject.SetActive(active);
+      }
+    }
+
 
     // PRAGMA MARK - IMoveViewContext Implementation
     public void HandleMoveTapped(Move move) {
@@ -128,11 +142,31 @@ namespace DT.Game {
     [SerializeField]
     private Transform _basePositionTransform;
     [SerializeField]
+    private Transform _healthBarTransform;
+    [SerializeField]
     private SpriteRenderer _renderer;
     [SerializeField]
     private Animator _animator;
 
+    private GameObject _healthBarObject;
+
+    private System.Action _queuedHealthBarAction;
+
     private Battle _battle;
+
+    private void Awake() {
+      this.baseHealth = this.health;
+
+      this.DoAfterDelay(0.016f, () => {
+        this._healthBarObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate("HealthBar");
+        this._healthBarObject.transform.SetParent(CanvasUtil.MainCanvas.transform, worldPositionStays : false);
+        this._healthBarObject.GetComponent<HealthBar>().SetupWithActor(this);
+
+        if (this._queuedHealthBarAction != null) {
+          this._queuedHealthBarAction.Invoke();
+        }
+      });
+    }
 
     private void HandleMoveFinished(Move move) {
       move.OnMoveFinished.RemoveListener(this.HandleMoveFinished);

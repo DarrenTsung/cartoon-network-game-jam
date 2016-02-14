@@ -27,6 +27,11 @@ namespace DT.Game {
         currentActor.SetupWithBattleContext(this);
       });
 
+      // hide all health bars for attackers
+      this.DoActionOnAllActorsOnCurrentSide((Actor currentActor) => {
+        currentActor.SetHealthBarActive(false);
+      });
+
       this._actedActors.Clear();
 
       this.StartNextActor();
@@ -157,7 +162,18 @@ namespace DT.Game {
       }
 
       if (this.AreAllActorsForCurrentSideFinishedActing()) {
+        // show all health bars for old acting side (now defending)
+        this.DoActionOnAllActorsOnCurrentSide((Actor currentActor) => {
+          currentActor.SetHealthBarActive(true);
+        });
+
         this.SwitchCurrentSide();
+
+        // hide all health bars for attackers
+        this.DoActionOnAllActorsOnCurrentSide((Actor currentActor) => {
+          currentActor.SetHealthBarActive(false);
+        });
+
         this.StartNextActor();
       } else {
         foreach (Actor actor in this.GetActorsForCurrentSide()) {
@@ -178,6 +194,12 @@ namespace DT.Game {
       }
 
       foreach (Actor actor in this.badGuys) {
+        action.Invoke(actor);
+      }
+    }
+
+    private void DoActionOnAllActorsOnCurrentSide(Action<Actor> action) {
+      foreach (Actor actor in this.GetActorsForCurrentSide()) {
         action.Invoke(actor);
       }
     }
