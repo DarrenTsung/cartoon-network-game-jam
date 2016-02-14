@@ -5,8 +5,14 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace DT.Game {
+  public class ActorEvent : UnityEvent<Actor> {}
+
   [CustomExtensionInspector]
   public class Actor : MonoBehaviour, IMoveViewContext {
+    // PRAGMA MARK - Static
+    public static ActorEvent OnActorDied = new ActorEvent();
+
+
     // PRAGMA MARK - Public Interface
     [HideInInspector]
     public UnityEvent OnFinishedActing = new UnityEvent();
@@ -66,6 +72,11 @@ namespace DT.Game {
         this.AnimatorIdle();
         this.OnFinishedFlashyAnimating.Invoke();
       });
+    }
+
+    public void Die() {
+      this.AnimatorDeath();
+      Actor.OnActorDied.Invoke(this);
     }
 
     public void AnimatorAttack() {

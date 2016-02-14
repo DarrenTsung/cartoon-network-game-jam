@@ -107,6 +107,7 @@ namespace DT.Game {
     private HashSet<Actor> _actedActors = new HashSet<Actor>();
 
     private void Awake() {
+      Actor.OnActorDied.AddListener(this.HandleActorDied);
       this.StartBattle();
     }
 
@@ -168,6 +169,16 @@ namespace DT.Game {
 
       foreach (Actor actor in this._badGuys) {
         action.Invoke(actor);
+      }
+    }
+
+    private void HandleActorDied(Actor actor) {
+      if (this._goodGuys.Contains(actor)) {
+        this._goodGuys.Remove(actor);
+      }
+
+      if (this._badGuys.Contains(actor)) {
+        this._badGuys.Remove(actor);
       }
     }
   }

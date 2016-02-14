@@ -30,6 +30,10 @@ namespace DT.Game {
       int damage = (int)(this._actor.attackPower * computedAttackMultiplier);
       this._target.health -= damage;
 
+      if (this._target.health <= 0) {
+        this._target.Die();
+      }
+
       GameObject floatingTextSFXObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate("DamageFloatingTextSFX");
       floatingTextSFXObject.transform.SetParent(CanvasUtil.MainCanvas.transform, worldPositionStays : false);
       ((RectTransform)floatingTextSFXObject.transform).anchoredPosition = (Vector3)((RectTransform)floatingTextSFXObject.transform).anchoredPosition + Camera.main.WorldToScreenPoint(this._target.transform.position);
