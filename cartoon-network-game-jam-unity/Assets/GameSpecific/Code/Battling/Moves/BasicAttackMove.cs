@@ -12,6 +12,8 @@ namespace DT.Game {
       this._actor = actor;
       this._target = target;
       this._enemies = enemies;
+
+      this._actor.transform.position = new Vector3(this._actor.transform.position.x, this._actor.transform.position.y, this._actor.transform.position.z - 6.0f);
     }
 
     public RhythmSequenceKeyframe[] moveKeyframes;
@@ -98,6 +100,7 @@ namespace DT.Game {
 
     private void BackToIdle() {
       this._actor.OnFinishedFlashyAnimating.RemoveListener(this.BackToIdle);
+      this._actor.transform.position = new Vector3(this._actor.transform.position.x, this._actor.transform.position.y, this._actor.transform.position.z + 6.0f);
 
       this.DoAfterDelay(0.5f, () => {
         this.cooldownTurnsLeft = this._cooldownTurnsAfterUse;

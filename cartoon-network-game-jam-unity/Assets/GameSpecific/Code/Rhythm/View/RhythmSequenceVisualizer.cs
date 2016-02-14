@@ -61,10 +61,13 @@ namespace DT.Game {
           string prefabName = "";
           if (result.keyframeCount == result.perfectHitCount) {
             prefabName = "UltimateFloatingTextSFX";
+            CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 1.0f, GameConstants.Instance.kAttackShakeDuration * 2.0f);
           } else if (result.keyframeCount == result.missCount) {
             prefabName = "SubparFloatingTextSFX";
+            CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.7f, GameConstants.Instance.kAttackShakeDuration * 2.0f);
           } else {
             prefabName = "PrettyGoodFloatingTextSFX";
+            CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.3f, GameConstants.Instance.kAttackShakeDuration * 2.0f);
           }
 
           GameObject floatingTextSFXObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate(prefabName);
@@ -76,7 +79,7 @@ namespace DT.Game {
             anchoredPosition = anchoredPosition.SetX(-anchoredPosition.x);
           }
 
-          rectTransform.anchoredPosition = anchoredPosition + (Vector2)Camera.main.WorldToScreenPoint(storedPosition);
+          // rectTransform.anchoredPosition = anchoredPosition + (Vector2)Camera.main.WorldToScreenPoint(storedPosition);
 
           FloatingTextSFX floatingTextSFX = floatingTextSFXObject.GetComponent<FloatingTextSFX>();
           floatingTextSFX.SetText("");
@@ -94,13 +97,16 @@ namespace DT.Game {
       switch (rating) {
         case RhythmSequenceKeyframeRating.PERFECT:
           prefabName = "PerfectFloatingTextSFX";
+          CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.8f, GameConstants.Instance.kAttackShakeDuration * 2.0f);
           break;
         case RhythmSequenceKeyframeRating.GOOD:
           prefabName = "GoodFloatingTextSFX";
+          CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.5f, GameConstants.Instance.kAttackShakeDuration * 1.5f);
           break;
         case RhythmSequenceKeyframeRating.MISS:
         default:
           prefabName = "MissFloatingTextSFX";
+          CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.2f, GameConstants.Instance.kAttackShakeDuration);
           break;
       }
 
