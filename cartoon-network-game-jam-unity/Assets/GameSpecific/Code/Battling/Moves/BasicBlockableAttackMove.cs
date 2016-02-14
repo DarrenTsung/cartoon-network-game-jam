@@ -12,6 +12,7 @@ namespace DT.Game {
 
       int damage = (int)(this._actor.attackPower * computedAttackMultiplier);
       this._target.health -= damage;
+      this._target.AnimatorDamage();
 
       if (this._target.health <= 0) {
         this._target.Die();

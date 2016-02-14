@@ -36,6 +36,11 @@ namespace DT.Game {
     [SerializeField]
     protected string _rushTrigger = "Rush";
 
+    [SerializeField]
+    protected float _shakeMagnitudeMultiplier = 1.0f;
+    [SerializeField]
+    protected float _shakeDurationMultiplier = 1.0f;
+
     protected RhythmSequenceResult _result;
 
     protected virtual void DoDamage() {
@@ -43,6 +48,7 @@ namespace DT.Game {
 
       int damage = (int)(this._actor.attackPower * computedAttackMultiplier);
       this._target.health -= damage;
+      this._target.AnimatorDamage();
 
       if (this._target.health <= 0) {
         this._target.Die();
@@ -67,8 +73,7 @@ namespace DT.Game {
     private void Attack() {
       this._actor.OnFinishedFlashyAnimating.RemoveListener(this.Attack);
       this._actor.AnimatorTrigger(this._attackTrigger);
-      CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude, GameConstants.Instance.kAttackShakeDuration);
-      this._target.AnimatorDamage();
+      CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * this._shakeMagnitudeMultiplier, GameConstants.Instance.kAttackShakeDuration * this._shakeDurationMultiplier);
 
       this.DoDamage();
 
