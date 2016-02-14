@@ -51,7 +51,8 @@ namespace DT.Game {
       foreach (string prefabName in opponentPrefabNames) {
         bool indexIsEven = index % 2 == 0;
         GameObject opponentObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate(prefabName);
-        opponentObject.transform.position = new Vector3(2.0f + (heightIndex * 1.5f), heightIndex * heightOffset, 0.0f);
+        // opponentObject.transform.position = new Vector3(2.0f + (heightIndex * 1.5f), heightIndex * heightOffset, 0.0f);
+        opponentObject.transform.position = new Vector3(3.5f + (heightIndex * 1.0f), heightIndex * heightOffset, 0.0f);
 
         Actor actor = opponentObject.GetRequiredComponentInChildren<Actor>();
         Battle.Instance.badGuys.Add(actor);

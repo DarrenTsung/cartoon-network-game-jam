@@ -32,6 +32,20 @@ namespace DT.Game {
 
     public void DisplayMoveset() {
       MovesetView.Instance.SetupWithMoveset(this.moveset, this);
+      this._pulseCoroutine = this.PulsingCoroutine();
+      this.StartCoroutine(this._pulseCoroutine);
+    }
+
+    private IEnumerator _pulseCoroutine;
+    [SerializeField]
+    private float _pulseAmount = 0.1f;
+    private IEnumerator PulsingCoroutine() {
+      for (float time = 0;; time += Time.deltaTime) {
+        float sinFrom0To1 = (Mathf.Sin(time * 2.0f * Mathf.PI) * 0.5f) + 0.5f;
+        float computedPulse = 1.0f + (sinFrom0To1 * this._pulseAmount);
+        this.transform.localScale = new Vector3(computedPulse, computedPulse, 1.0f);
+        yield return new WaitForEndOfFrame();
+      }
     }
 
     [MakeButton]
@@ -40,6 +54,11 @@ namespace DT.Game {
     }
 
     public void ApplyMove(Move move) {
+      if (this._pulseCoroutine != null) {
+        this.StopCoroutine(this._pulseCoroutine);
+        this._pulseCoroutine = null;
+      }
+
       List<Actor> teammates = this._battle.GetTeammatesForActor(this);
       List<Actor> enemies = this._battle.GetEnemiesForActor(this);
 
