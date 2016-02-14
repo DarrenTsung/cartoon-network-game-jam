@@ -41,6 +41,9 @@ namespace DT.Game {
     [SerializeField]
     protected float _shakeDurationMultiplier = 1.0f;
 
+    [SerializeField]
+    protected float _attackDurationMultiplier = 1.0f;
+
     protected RhythmSequenceResult _result;
 
     protected virtual void DoDamage() {
@@ -77,7 +80,7 @@ namespace DT.Game {
 
       this.DoDamage();
 
-      this.DoAfterDelay(GameConstants.Instance.kAttackDuration, () => {
+      this.DoAfterDelay(GameConstants.Instance.kAttackDuration * this._attackDurationMultiplier, () => {
         this._actor.AnimatorIdle();
         this._actor.FlashyAnimateTo(this._actor.BasePosition, this._rushTrigger);
         this._actor.OnFinishedFlashyAnimating.AddListener(this.BackToIdle);
