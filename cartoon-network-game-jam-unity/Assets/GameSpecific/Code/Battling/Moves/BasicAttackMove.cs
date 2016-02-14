@@ -67,7 +67,7 @@ namespace DT.Game {
     private void BackToIdle() {
       this._actor.OnFinishedFlashyAnimating.RemoveListener(this.BackToIdle);
 
-      this.DoAfterDelay(1.0f, () => {
+      this.DoAfterDelay(0.5f, () => {
         this.OnMoveFinished.Invoke(this);
       });
     }

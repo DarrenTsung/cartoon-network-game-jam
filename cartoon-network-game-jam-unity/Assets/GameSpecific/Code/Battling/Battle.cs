@@ -12,8 +12,8 @@ namespace DT.Game {
 
   [CustomExtensionInspector]
   public class Battle : Singleton<Battle> {
-    public List<Actor> _goodGuys;
-    public List<Actor> _badGuys;
+    public List<Actor> goodGuys;
+    public List<Actor> badGuys;
 
     public Actor CurrentlyActingActor {
       get { return this._currentlyActingActor; }
@@ -21,6 +21,8 @@ namespace DT.Game {
 
     [MakeButton]
     public void StartBattle() {
+      this._battleFinished = false;
+
       this.DoActionOnAllActors((Actor currentActor) => {
         currentActor.SetupWithBattleContext(this);
       });
@@ -31,7 +33,7 @@ namespace DT.Game {
     }
 
     public BattleSideState GetSideForActor(Actor actor) {
-      if (this._goodGuys.Contains(actor)) {
+      if (this.goodGuys.Contains(actor)) {
         return BattleSideState.GOOD;
       } else {
         return BattleSideState.BAD;
@@ -39,18 +41,18 @@ namespace DT.Game {
     }
 
     public List<Actor> GetTeammatesForActor(Actor actor) {
-      if (this._goodGuys.Contains(actor)) {
-        return this._goodGuys;
+      if (this.goodGuys.Contains(actor)) {
+        return this.goodGuys;
       } else {
-        return this._badGuys;
+        return this.badGuys;
       }
     }
 
     public List<Actor> GetEnemiesForActor(Actor actor) {
-      if (this._goodGuys.Contains(actor)) {
-        return this._badGuys;
+      if (this.goodGuys.Contains(actor)) {
+        return this.badGuys;
       } else {
-        return this._goodGuys;
+        return this.goodGuys;
       }
     }
 
@@ -58,12 +60,12 @@ namespace DT.Game {
       BattleSideState side = this.GetSideForActor(actor);
       switch (side) {
         case BattleSideState.GOOD:
-          return this._badGuys[UnityEngine.Random.Range(0, this._badGuys.Count)];
+          return this.badGuys[UnityEngine.Random.Range(0, this.badGuys.Count)];
           // return null; // TODO (darren): return player's currently selected enemy
         case BattleSideState.BAD:
         default:
           // if the person attacking is bad, return random good guy
-          return this._goodGuys[UnityEngine.Random.Range(0, this._goodGuys.Count)];
+          return this.goodGuys[UnityEngine.Random.Range(0, this.goodGuys.Count)];
       }
     }
 
@@ -101,23 +103,27 @@ namespace DT.Game {
     }
 
     // PRAGMA MARK - Internal
+    [SerializeField]
     private Actor _currentlyActingActor = null;
 
+    [SerializeField, ReadOnly]
     private BattleSideState _currentlyActingSide = BattleSideState.GOOD;
+    [SerializeField, ReadOnly]
+    private bool _battleFinished = true;
+    [SerializeField]
     private HashSet<Actor> _actedActors = new HashSet<Actor>();
 
     private void Awake() {
       Actor.OnActorDied.AddListener(this.HandleActorDied);
-      this.StartBattle();
     }
 
     private List<Actor> GetActorsForCurrentSide() {
       switch (this._currentlyActingSide) {
         case BattleSideState.GOOD:
-          return this._goodGuys;
+          return this.goodGuys;
         case BattleSideState.BAD:
         default:
-          return this._badGuys;
+          return this.badGuys;
       }
     }
 
@@ -146,6 +152,10 @@ namespace DT.Game {
     }
 
     private void StartNextActor() {
+      if (this._battleFinished) {
+        return;
+      }
+
       if (this.AreAllActorsForCurrentSideFinishedActing()) {
         this.SwitchCurrentSide();
         this.StartNextActor();
@@ -163,22 +173,33 @@ namespace DT.Game {
     }
 
     private void DoActionOnAllActors(Action<Actor> action) {
-      foreach (Actor actor in this._goodGuys) {
+      foreach (Actor actor in this.goodGuys) {
         action.Invoke(actor);
       }
 
-      foreach (Actor actor in this._badGuys) {
+      foreach (Actor actor in this.badGuys) {
         action.Invoke(actor);
       }
     }
 
     private void HandleActorDied(Actor actor) {
-      if (this._goodGuys.Contains(actor)) {
-        this._goodGuys.Remove(actor);
+      if (this.goodGuys.Contains(actor)) {
+        this.goodGuys.Remove(actor);
       }
 
-      if (this._badGuys.Contains(actor)) {
-        this._badGuys.Remove(actor);
+      if (this.badGuys.Contains(actor)) {
+        this.badGuys.Remove(actor);
+      }
+
+      if (this.badGuys.Count <= 0) {
+        Debug.Log("WIN");
+        BattleSequenceManager.Instance.MoveOnToNextBattle();
+        this._battleFinished = true;
+      }
+
+      if (this.goodGuys.Count <= 0) {
+        Debug.Log("LOSE");
+        this._battleFinished = true;
       }
     }
   }
