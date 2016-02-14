@@ -52,7 +52,11 @@ namespace DT.Game {
 
     [MakeButton]
     public void DoRandomMove() {
-      this.ApplyMove(this.moveset[Random.Range(0, this.moveset.Count)]);
+      Move chosenMove = this.moveset[Random.Range(0, this.moveset.Count)];
+      while (chosenMove.OnCooldown) {
+        chosenMove = this.moveset[Random.Range(0, this.moveset.Count)];
+      }
+      this.ApplyMove(chosenMove);
     }
 
     public void ApplyMove(Move move) {

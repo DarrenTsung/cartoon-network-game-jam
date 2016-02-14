@@ -84,7 +84,7 @@ namespace DT.Game {
       }
 
       foreach (KeyValuePair<RhythmSequenceKeyframe, RhythmSequenceKeyframeVisualizer> pair in this._visualizerMap) {
-        GameObject.Destroy(pair.Value.gameObject);
+        pair.Value.FadeAway();
       }
       this._container.SetActive(false);
     }
@@ -118,7 +118,7 @@ namespace DT.Game {
       FloatingTextSFX floatingTextSFX = floatingTextSFXObject.GetComponent<FloatingTextSFX>();
       floatingTextSFX.SetText(rating.ToString());
 
-      GameObject.Destroy(this._visualizerMap[keyframe].gameObject);
+      this._visualizerMap[keyframe].FadeAway();
       this._visualizerMap.Remove(keyframe);
     }
 
