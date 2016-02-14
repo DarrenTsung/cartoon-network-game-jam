@@ -3,12 +3,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 
 namespace DT.Game {
   public class FloatingTextSFX : MonoBehaviour {
     // PRAGMA MARK - Public Interface
     public void SetText(string text) {
-      this._text.text = text;
+      this._text.SetText(text);
 
       this.DoEveryFrameForDuration(this._duration, (float time, float duration) => {
         float percentagePassed = time / duration;
@@ -24,7 +25,7 @@ namespace DT.Game {
 
     // PRAGMA MARK - Internal
     [SerializeField]
-    private Text _text;
+    private TextMeshProUGUI _text;
     [SerializeField]
     private float _duration = 0.7f;
   }

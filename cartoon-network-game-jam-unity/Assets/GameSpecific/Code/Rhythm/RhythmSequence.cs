@@ -16,9 +16,9 @@ namespace DT.Game {
     public static string ToString(this RhythmSequenceKeyframeRating rating) {
       switch (rating) {
         case RhythmSequenceKeyframeRating.PERFECT:
-          return "PERFECT";
+          return "PERFECT!!";
         case RhythmSequenceKeyframeRating.GOOD:
-          return "GOOD";
+          return "GOOD!";
         case RhythmSequenceKeyframeRating.MISS:
           return "MISS";
       }
