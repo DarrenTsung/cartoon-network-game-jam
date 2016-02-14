@@ -44,6 +44,9 @@ namespace DT.Game {
     [SerializeField]
     protected float _attackDurationMultiplier = 1.0f;
 
+    [SerializeField]
+    protected float _attackStartDelay = 0.0f;
+
     protected RhythmSequenceResult _result;
 
     protected void Awake() {
@@ -72,9 +75,11 @@ namespace DT.Game {
     private void HandleSequenceFinished(RhythmSequence sequence, RhythmSequenceResult result) {
       this._result = result;
 
-      sequence.OnSequenceFinished.RemoveListener(this.HandleSequenceFinished);
-      this._actor.FlashyAnimateTo(this._target.AttackedPosition, this._rushTrigger);
-      this._actor.OnFinishedFlashyAnimating.AddListener(this.Attack);
+      this.DoAfterDelay(this._attackStartDelay, () => {
+        sequence.OnSequenceFinished.RemoveListener(this.HandleSequenceFinished);
+        this._actor.FlashyAnimateTo(this._target.AttackedPosition, this._rushTrigger);
+        this._actor.OnFinishedFlashyAnimating.AddListener(this.Attack);
+      });
     }
 
     private void Attack() {

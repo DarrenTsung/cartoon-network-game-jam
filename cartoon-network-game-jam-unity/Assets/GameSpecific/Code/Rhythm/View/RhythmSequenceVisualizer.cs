@@ -53,6 +53,35 @@ namespace DT.Game {
     }
 
     private void HandleSequenceFinished(RhythmSequence sequence, RhythmSequenceResult result) {
+      Vector3 storedPosition = this.transform.position;
+
+      if (result.keyframeCount == 3 || result.keyframeCount == 4) {
+        this.DoAfterDelay(0.2f, () => {
+          string prefabName = "";
+          if (result.keyframeCount == result.perfectHitCount) {
+            prefabName = "UltimateFloatingTextSFX";
+          } else if (result.keyframeCount == result.missCount) {
+            prefabName = "SubparFloatingTextSFX";
+          } else {
+            prefabName = "PrettyGoodFloatingTextSFX";
+          }
+
+          GameObject floatingTextSFXObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate(prefabName);
+          floatingTextSFXObject.transform.SetParent(CanvasUtil.MainCanvas.transform, worldPositionStays : false);
+
+          RectTransform rectTransform = (RectTransform)floatingTextSFXObject.transform;
+          Vector2 anchoredPosition = rectTransform.anchoredPosition;
+          if (storedPosition.x > 0.0f) {
+            anchoredPosition = anchoredPosition.SetX(-anchoredPosition.x);
+          }
+
+          rectTransform.anchoredPosition = anchoredPosition + (Vector2)Camera.main.WorldToScreenPoint(storedPosition);
+
+          FloatingTextSFX floatingTextSFX = floatingTextSFXObject.GetComponent<FloatingTextSFX>();
+          floatingTextSFX.SetText("");
+        });
+      }
+
       foreach (KeyValuePair<RhythmSequenceKeyframe, RhythmSequenceKeyframeVisualizer> pair in this._visualizerMap) {
         GameObject.Destroy(pair.Value.gameObject);
       }
