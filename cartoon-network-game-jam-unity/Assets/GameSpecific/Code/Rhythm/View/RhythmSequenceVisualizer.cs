@@ -60,11 +60,30 @@ namespace DT.Game {
     }
 
     private void HandleKeyframeHit(RhythmSequenceKeyframe keyframe, RhythmSequenceKeyframeRating rating) {
-      GameObject floatingTextSFXObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate("FloatingTextSFX");
+      string prefabName = "";
+      switch (rating) {
+        case RhythmSequenceKeyframeRating.PERFECT:
+          prefabName = "PerfectFloatingTextSFX";
+          break;
+        case RhythmSequenceKeyframeRating.GOOD:
+          prefabName = "GoodFloatingTextSFX";
+          break;
+        case RhythmSequenceKeyframeRating.MISS:
+        default:
+          prefabName = "MissFloatingTextSFX";
+          break;
+      }
+
+      GameObject floatingTextSFXObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate(prefabName);
       floatingTextSFXObject.transform.SetParent(CanvasUtil.MainCanvas.transform, worldPositionStays : false);
 
       RectTransform rectTransform = (RectTransform)floatingTextSFXObject.transform;
-      rectTransform.anchoredPosition = rectTransform.anchoredPosition + (Vector2)Camera.main.WorldToScreenPoint(this.transform.position);
+      Vector2 anchoredPosition = rectTransform.anchoredPosition;
+      if (this.transform.position.x > 0.0f) {
+        anchoredPosition = anchoredPosition.SetX(-anchoredPosition.x);
+      }
+
+      rectTransform.anchoredPosition = anchoredPosition + (Vector2)Camera.main.WorldToScreenPoint(this.transform.position);
 
       FloatingTextSFX floatingTextSFX = floatingTextSFXObject.GetComponent<FloatingTextSFX>();
       floatingTextSFX.SetText(rating.ToString());

@@ -18,6 +18,14 @@ namespace DT.Game {
                                       this._text.color.g,
                                       this._text.color.b,
                                       Mathf.Max(1.0f - percentagePassed));
+
+        if (this._image != null) {
+          this._image.transform.localPosition = new Vector3(0.0f, percentagePassed, 0.0f);
+          this._image.color = new Color(this._image.color.r,
+                                        this._image.color.g,
+                                        this._image.color.b,
+                                        Mathf.Max(1.0f - percentagePassed));
+        }
       }, () => {
         GameObject.Destroy(this.gameObject);
       });
@@ -26,6 +34,8 @@ namespace DT.Game {
     // PRAGMA MARK - Internal
     [SerializeField]
     private TextMeshProUGUI _text;
+    [SerializeField]
+    private Image _image;
     [SerializeField]
     private float _duration = 0.7f;
   }

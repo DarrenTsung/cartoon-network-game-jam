@@ -1,5 +1,6 @@
 using DT;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using System.Collections;
 using System.Collections.Generic;
@@ -18,6 +19,8 @@ namespace DT.Game {
 
     [ReadOnly]
     public int cooldownTurnsLeft = 0;
+
+    public Sprite displaySprite;
 
     public void DecrementCooldownTurnsIfPossible() {
       if (this.cooldownTurnsLeft > 0) {

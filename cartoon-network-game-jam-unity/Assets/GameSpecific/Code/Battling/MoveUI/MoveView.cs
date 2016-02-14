@@ -18,10 +18,11 @@ namespace DT.Game {
       this._move = move;
       this._context = context;
 
+      this._buttonImage.sprite = move.displaySprite;
       if (this._move.OnCooldown) {
         this._cooldownTurnsLeftText.enabled = true;
         this._cooldownTurnsLeftText.SetText(string.Format("{0}", this._move.cooldownTurnsLeft));
-        this._buttonImage.color = new Color(1.0f, 1.0f, 1.0f, 0.4f);
+        this._buttonImage.color = new Color(1.0f, 1.0f, 1.0f, 0.7f);
         this._button.interactable = false;
       } else {
         this._cooldownTurnsLeftText.enabled = false;
