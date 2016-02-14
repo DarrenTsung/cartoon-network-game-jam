@@ -80,6 +80,8 @@ namespace DT.Game {
     }
 
     public void AnimatorAttack() {
+      CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude, GameConstants.Instance.kAttackShakeDuration);
+
       if (this._animator == null) {
         return;
       }

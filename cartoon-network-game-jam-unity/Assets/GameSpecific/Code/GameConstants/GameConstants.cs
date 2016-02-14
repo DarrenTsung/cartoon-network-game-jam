@@ -13,6 +13,9 @@ namespace DT.Game {
 
     public float kNextBattleDelay = 1.5f;
 
+    public float kAttackShakeMagnitude = 0.5f;
+    public float kAttackShakeDuration = 0.5f;
+
     public float kFlashyAttackTransitionDuration = 0.6f;
     public float kAttackDuration = 1.0f;
     public float kDuplicateSpriteDelay = 0.1f;
