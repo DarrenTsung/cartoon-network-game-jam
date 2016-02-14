@@ -43,7 +43,7 @@ namespace DT.Game {
 
       bool opponentCountIsEven = opponentPrefabNames.Count % 2 == 0;
 
-      float totalHeight = (opponentCountIsEven) ? 5.0f : 7.0f;
+      float totalHeight = (opponentCountIsEven) ? 5.0f : 8.0f;
       float heightOffset = totalHeight / (float)opponentPrefabNames.Count;
 
       int index = 0;
@@ -51,7 +51,7 @@ namespace DT.Game {
       foreach (string prefabName in opponentPrefabNames) {
         bool indexIsEven = index % 2 == 0;
         GameObject opponentObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate(prefabName);
-        opponentObject.transform.position = new Vector3(5.0f + ((heightIndex % 2 == 0) ? 1.0f : 0.0f), heightIndex * heightOffset, 0.0f);
+        opponentObject.transform.position = new Vector3(4.5f + ((heightIndex % 2 == 0) ? 1.0f : 0.0f), heightIndex * heightOffset, 0.0f);
 
         Actor actor = opponentObject.GetRequiredComponentInChildren<Actor>();
         Battle.Instance.badGuys.Add(actor);
