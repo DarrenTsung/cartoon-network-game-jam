@@ -191,6 +191,14 @@ namespace DT.Game {
 
     private void HandleMoveFinished(Move move) {
       move.OnMoveFinished.RemoveListener(this.HandleMoveFinished);
+      foreach (Move movesetMove in this.moveset) {
+        if (movesetMove == move) {
+          continue;
+        }
+
+        movesetMove.DecrementCooldownTurnsIfPossible();
+      }
+
       this.OnFinishedActing.Invoke();
     }
 

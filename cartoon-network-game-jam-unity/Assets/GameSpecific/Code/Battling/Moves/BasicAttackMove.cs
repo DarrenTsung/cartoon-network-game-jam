@@ -46,6 +46,10 @@ namespace DT.Game {
 
     protected RhythmSequenceResult _result;
 
+    protected void Awake() {
+      this.cooldownTurnsLeft = this._cooldownTurnsAfterUse;
+    }
+
     protected virtual void DoDamage() {
       float computedAttackMultiplier = this._attackMultiplier + (this._perfectMultiplier * this._result.perfectHitCount) + (this._goodMultiplier * this._result.goodHitCount) + (this._missMultiplier * this._result.missCount);
 
@@ -91,6 +95,7 @@ namespace DT.Game {
       this._actor.OnFinishedFlashyAnimating.RemoveListener(this.BackToIdle);
 
       this.DoAfterDelay(0.5f, () => {
+        this.cooldownTurnsLeft = this._cooldownTurnsAfterUse;
         this.OnMoveFinished.Invoke(this);
       });
     }

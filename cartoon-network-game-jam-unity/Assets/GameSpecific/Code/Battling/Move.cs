@@ -12,6 +12,23 @@ namespace DT.Game {
     [HideInInspector]
     public MoveEvent OnMoveFinished = new MoveEvent();
 
+    public bool OnCooldown {
+      get { return this.cooldownTurnsLeft > 0; }
+    }
+
+    [ReadOnly]
+    public int cooldownTurnsLeft = 0;
+
+    public void DecrementCooldownTurnsIfPossible() {
+      if (this.cooldownTurnsLeft > 0) {
+        this.cooldownTurnsLeft--;
+      }
+    }
+
     public abstract void Apply(Battle battle, List<Actor> teammates, List<Actor> enemies, Actor actor, Actor target);
+
+    // PRAGMA MARK - Internal
+    [SerializeField]
+    protected int _cooldownTurnsAfterUse = 0;
   }
 }
