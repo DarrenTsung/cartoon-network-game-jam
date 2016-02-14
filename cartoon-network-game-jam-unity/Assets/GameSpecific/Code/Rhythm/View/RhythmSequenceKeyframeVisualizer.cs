@@ -6,6 +6,10 @@ using System.Collections.Generic;
 namespace DT.Game {
   public class RhythmSequenceKeyframeVisualizer : MonoBehaviour {
     // PRAGMA MARK - Public Interface
+    public void SetColor(Color color) {
+      this._renderer.color = color;
+    }
+
     public void UpdateWithTimeRemaining(float timeRemaining) {
       if (timeRemaining < 0.0f) {
         timeRemaining = 0.0f;

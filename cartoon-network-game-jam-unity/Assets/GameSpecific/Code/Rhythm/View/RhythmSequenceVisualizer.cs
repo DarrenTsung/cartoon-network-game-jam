@@ -39,6 +39,15 @@ namespace DT.Game {
 
         Vector3 computedPosition = this._radius * (Quaternion.AngleAxis(angle, -Vector3.forward) * new Vector3(-1.0f, 0.0f, 0.0f));
         keyframeVisualizer.transform.localPosition = computedPosition;
+
+        Color visualColor = Color.red;
+        if (Mathf.Abs(timeRemaining) <= GameConstants.Instance.kPerfectTimingThreshold) {
+          visualColor = Color.green;
+        } else if (Mathf.Abs(timeRemaining) <= GameConstants.Instance.kGoodTimingThreshold) {
+          visualColor = Color.yellow;
+        }
+        keyframeVisualizer.SetColor(visualColor);
+
         // keyframeVisualizer.UpdateWithTimeRemaining(timeRemaining);
       }
     }
