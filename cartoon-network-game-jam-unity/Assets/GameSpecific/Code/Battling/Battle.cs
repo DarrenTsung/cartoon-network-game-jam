@@ -22,6 +22,7 @@ namespace DT.Game {
     [MakeButton]
     public void StartBattle() {
       this._battleFinished = false;
+      this._currentlyActingSide = BattleSideState.GOOD;
 
       this.DoActionOnAllActors((Actor currentActor) => {
         currentActor.SetupWithBattleContext(this);
@@ -222,6 +223,7 @@ namespace DT.Game {
       if (this.goodGuys.Count <= 0) {
         Debug.Log("LOSE");
         this._battleFinished = true;
+        Toolbox.GetInstance<ViewControllerActivePresentationManager>().Present(new TitleScreenViewController());
       }
     }
   }
