@@ -50,7 +50,7 @@ namespace DT.Game {
     protected RhythmSequenceResult _result;
 
     protected void Awake() {
-      this.cooldownTurnsLeft = this._cooldownTurnsAfterUse;
+      this.cooldownTurnsLeft = this._cooldownTurnsAfterUse - 1;
     }
 
     protected virtual void DoDamage() {

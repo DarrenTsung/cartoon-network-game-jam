@@ -34,8 +34,8 @@ namespace DT.Game {
       MovesetView.Instance.SetupWithMoveset(this.moveset, this);
       RectTransform movesetViewTransform = (RectTransform)MovesetView.Instance.transform;
       movesetViewTransform.anchoredPosition = Camera.main.WorldToScreenPoint(this.AttackedPosition);
-      this._pulseCoroutine = this.PulsingCoroutine();
-      this.StartCoroutine(this._pulseCoroutine);
+      // this._pulseCoroutine = this.PulsingCoroutine();
+      // this.StartCoroutine(this._pulseCoroutine);
     }
 
     private IEnumerator _pulseCoroutine;

@@ -46,6 +46,7 @@ namespace DT.Game {
         } else if (Mathf.Abs(timeRemaining) <= GameConstants.Instance.kGoodTimingThreshold) {
           visualColor = Color.yellow;
         }
+        visualColor = new Color(visualColor.r, visualColor.g, visualColor.b, 0.8f);
         keyframeVisualizer.SetColor(visualColor);
 
         // keyframeVisualizer.UpdateWithTimeRemaining(timeRemaining);
