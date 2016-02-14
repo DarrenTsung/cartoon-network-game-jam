@@ -52,6 +52,7 @@ namespace DT.Game {
     public void FlashyAnimateTo(Vector3 endPosition) {
       Vector3 startPosition = this.transform.position;
 
+      this.AnimatorRush();
       int duplicateSpriteCount = 0;
       this.DoEveryFrameForDuration(GameConstants.Instance.kFlashyAttackTransitionDuration, (float time, float duration) => {
         float percentageComplete = Easers.Ease(EaseType.QuadOut, 0.0f, 1.0f, time, duration);
@@ -62,6 +63,7 @@ namespace DT.Game {
         }
       }, () => {
         this.transform.position = endPosition;
+        this.AnimatorIdle();
         this.OnFinishedFlashyAnimating.Invoke();
       });
     }
@@ -88,6 +90,22 @@ namespace DT.Game {
       }
 
       this._animator.SetTrigger("Damage");
+    }
+
+    public void AnimatorRush() {
+      if (this._animator == null) {
+        return;
+      }
+
+      this._animator.SetTrigger("Rush");
+    }
+
+    public void AnimatorDeath() {
+      if (this._animator == null) {
+        return;
+      }
+
+      this._animator.SetTrigger("Death");
     }
 
 
