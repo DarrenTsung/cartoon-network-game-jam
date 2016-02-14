@@ -24,6 +24,11 @@ namespace DT.Game {
       });
     }
 
+    public void StartBattleSequence() {
+      this._opponentIndex = 0;
+      this.SetupBattleForCurrentOpponents();
+    }
+
 
     // PRAGMA MARK - Internal
     [SerializeField]
@@ -31,10 +36,6 @@ namespace DT.Game {
 
     [SerializeField, ReadOnly]
     private int _opponentIndex = 0;
-
-    private void Awake() {
-      this.SetupBattleForCurrentOpponents();
-    }
 
     private void SetupBattleForCurrentOpponents() {
       Battle.Instance.badGuys.Clear();
