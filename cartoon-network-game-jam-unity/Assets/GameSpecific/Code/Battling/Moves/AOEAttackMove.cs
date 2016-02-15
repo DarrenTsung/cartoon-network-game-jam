@@ -11,6 +11,7 @@ namespace DT.Game {
       float computedAttackMultiplier = this._attackMultiplier + (this._perfectMultiplier * this._result.perfectHitCount) + (this._goodMultiplier * this._result.goodHitCount) + (this._missMultiplier * this._result.missCount);
 
       int damage = (int)(this._actor.attackPower * computedAttackMultiplier);
+
       foreach (Actor target in this._enemies) {
         target.health -= damage;
         target.AnimatorDamage();

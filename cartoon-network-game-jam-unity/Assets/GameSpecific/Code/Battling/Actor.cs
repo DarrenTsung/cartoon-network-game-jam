@@ -144,6 +144,7 @@ namespace DT.Game {
         return;
       }
 
+      this._hitEmitter.CreateParticlesAtPosition(this.transform.position);
       this._animator.SetTrigger("Damage");
     }
 
@@ -183,6 +184,9 @@ namespace DT.Game {
     private SpriteRenderer _renderer;
     [SerializeField]
     private Animator _animator;
+
+    [SerializeField]
+    private ParticleEmitterSystem _hitEmitter;
 
     private GameObject _healthBarObject;
 
