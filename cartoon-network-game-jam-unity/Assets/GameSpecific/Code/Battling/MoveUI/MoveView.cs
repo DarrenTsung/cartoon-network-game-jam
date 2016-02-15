@@ -32,6 +32,7 @@ namespace DT.Game {
     }
 
     public void HandleTap() {
+      SoundManager.Instance.PlaySoundFile(15);
       this._context.HandleMoveTapped(this._move);
     }
 

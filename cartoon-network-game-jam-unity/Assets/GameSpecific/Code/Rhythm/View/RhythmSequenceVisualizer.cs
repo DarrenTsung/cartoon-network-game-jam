@@ -69,6 +69,7 @@ namespace DT.Game {
             prefabName = "PrettyGoodFloatingTextSFX";
             CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.3f, GameConstants.Instance.kAttackShakeDuration * 2.0f);
           }
+          SoundManager.Instance.PlaySoundFile(4);
 
           GameObject floatingTextSFXObject = Toolbox.GetInstance<ObjectPoolManager>().Instantiate(prefabName);
           floatingTextSFXObject.transform.SetParent(CanvasUtil.MainCanvas.transform, worldPositionStays : false);
@@ -97,16 +98,19 @@ namespace DT.Game {
       switch (rating) {
         case RhythmSequenceKeyframeRating.PERFECT:
           prefabName = "PerfectFloatingTextSFX";
-          CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.8f, GameConstants.Instance.kAttackShakeDuration * 2.0f);
+          CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.6f, GameConstants.Instance.kAttackShakeDuration * 2.0f);
+          SoundManager.Instance.PlaySoundFile(2);
           break;
         case RhythmSequenceKeyframeRating.GOOD:
           prefabName = "GoodFloatingTextSFX";
-          CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.5f, GameConstants.Instance.kAttackShakeDuration * 1.5f);
+          CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.4f, GameConstants.Instance.kAttackShakeDuration * 1.5f);
+          SoundManager.Instance.PlaySoundFile(0);
           break;
         case RhythmSequenceKeyframeRating.MISS:
         default:
           prefabName = "MissFloatingTextSFX";
           CameraController.Main<CameraController>().Shake(GameConstants.Instance.kAttackShakeMagnitude * 0.2f, GameConstants.Instance.kAttackShakeDuration);
+          SoundManager.Instance.PlaySoundFile(1);
           break;
       }
 

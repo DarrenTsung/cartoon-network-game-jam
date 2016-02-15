@@ -12,8 +12,6 @@ namespace DT.Game {
       this._actor = actor;
       this._target = target;
       this._enemies = enemies;
-
-      this._actor.transform.position = new Vector3(this._actor.transform.position.x, this._actor.transform.position.y, this._actor.transform.position.z - 6.0f);
     }
 
     public RhythmSequenceKeyframe[] moveKeyframes;
@@ -49,6 +47,9 @@ namespace DT.Game {
     [SerializeField]
     protected float _attackStartDelay = 0.0f;
 
+    [SerializeField]
+    protected float _additionalScaling = 0.0f;
+
     protected RhythmSequenceResult _result;
 
     protected void Awake() {
@@ -79,7 +80,10 @@ namespace DT.Game {
 
       this.DoAfterDelay(this._attackStartDelay, () => {
         sequence.OnSequenceFinished.RemoveListener(this.HandleSequenceFinished);
-        this._actor.FlashyAnimateTo(this._target.AttackedPosition, this._rushTrigger);
+        this._actor.FlashyAnimateTo(this._target.AttackedPosition, this._rushTrigger, this._additionalScaling);
+        this.DoAfterDelay(0.2f, () => {
+          this._actor.transform.position = new Vector3(this._actor.transform.position.x, this._actor.transform.position.y, this._actor.transform.position.z - 6.0f);
+        });
         this._actor.OnFinishedFlashyAnimating.AddListener(this.Attack);
       });
     }
@@ -93,14 +97,16 @@ namespace DT.Game {
 
       this.DoAfterDelay(GameConstants.Instance.kAttackDuration * this._attackDurationMultiplier, () => {
         this._actor.AnimatorIdle();
-        this._actor.FlashyAnimateTo(this._actor.BasePosition, this._rushTrigger);
+        this._actor.FlashyAnimateTo(this._actor.BasePosition, this._rushTrigger, -this._additionalScaling);
+        this.DoAfterDelay(0.1f, () => {
+          this._actor.transform.position = new Vector3(this._actor.transform.position.x, this._actor.transform.position.y, this._actor.transform.position.z + 6.0f);
+        });
         this._actor.OnFinishedFlashyAnimating.AddListener(this.BackToIdle);
       });
     }
 
     private void BackToIdle() {
       this._actor.OnFinishedFlashyAnimating.RemoveListener(this.BackToIdle);
-      this._actor.transform.position = new Vector3(this._actor.transform.position.x, this._actor.transform.position.y, this._actor.transform.position.z + 6.0f);
 
       this.DoAfterDelay(0.5f, () => {
         this.cooldownTurnsLeft = this._cooldownTurnsAfterUse;

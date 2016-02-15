@@ -86,20 +86,31 @@ namespace DT.Game {
       get { return this._healthBarTransform.position; }
     }
 
-    public void FlashyAnimateTo(Vector3 endPosition, string rushTrigger) {
+    public void PlaySoundFile(int soundClipIndex) {
+      SoundManager.Instance.PlaySoundFile(soundClipIndex);
+    }
+
+    public void FlashyAnimateTo(Vector3 endPosition, string rushTrigger, float additionalScaling) {
       Vector3 startPosition = this.transform.position;
+
+      Vector3 oldScale = this.transform.localScale;
+      Vector3 newScale = new Vector3(this.transform.localScale.x + additionalScaling, this.transform.localScale.y + additionalScaling, this.transform.localScale.z);
 
       this.AnimatorTrigger(rushTrigger);
       int duplicateSpriteCount = 0;
       this.DoEveryFrameForDuration(GameConstants.Instance.kFlashyAttackTransitionDuration, (float time, float duration) => {
         float percentageComplete = Easers.Ease(EaseType.QuadOut, 0.0f, 1.0f, time, duration);
+        float oldZ = this.transform.position.z;
         this.transform.position = Vector3.Lerp(startPosition, endPosition, percentageComplete);
+        this.transform.position = this.transform.position.SetZ(oldZ);
+        this.transform.localScale = Vector3.Lerp(oldScale, newScale, percentageComplete);
         if ((int)(time / GameConstants.Instance.kDuplicateSpriteDelay) > duplicateSpriteCount) {
           this.SpawnDuplicateSprite();
           duplicateSpriteCount++;
         }
       }, () => {
         this.transform.position = endPosition;
+        this.transform.localScale = newScale;
         this.AnimatorIdle();
         this.OnFinishedFlashyAnimating.Invoke();
       });

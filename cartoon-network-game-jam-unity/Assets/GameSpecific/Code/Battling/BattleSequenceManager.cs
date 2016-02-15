@@ -28,6 +28,7 @@ namespace DT.Game {
       this._opponentIndex = 0;
       this.SetupBattleWithGoodGuys();
       this.SetupBattleForCurrentOpponents();
+      SoundManager.Instance.RestartBGMusic();
     }
 
 
